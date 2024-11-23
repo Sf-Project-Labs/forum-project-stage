@@ -92,9 +92,15 @@ This project uses **Pylint** to enforce code quality standards and ensure consis
 
 To ensure the code adheres to quality standards, run Pylint on the project. Follow the instructions below:
 
-#### 1. Install Dependencies
+## 1. Install Dependencies
 
 Make sure you have installed all the required dependencies, including Pylint and the Pylint-Django plugin.
 
-```bash
+```bash```
 pip install -r requirements.txt
+
+## 2. Run Pylint on the Entire Project
+To lint the entire project (including all apps and modules), run the following command:
+
+```bash```
+pylint --load-plugins pylint_django djangoProject
