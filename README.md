@@ -98,10 +98,3 @@ Make sure that you have all the required dependencies installed, including **Pyl
 
 ```bash
 pip install -r requirements.txt
-
-#### 2. Run Pylint on the Entire Project
-
-To lint the entire project (including all apps and modules), run the following command:
-
-```bash
-pylint --load-plugins pylint_django djangoProject
