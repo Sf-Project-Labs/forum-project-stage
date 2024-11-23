@@ -84,4 +84,17 @@ We are committed to delivering a platform that is not just a marketplace for ide
 - Regular feedback from both user groups (startups and investors) should be incorporated.
 
 
+## Code Quality: Linting with Pylint
 
+This project uses **Pylint** to enforce code quality standards. Pylint is a Python linting tool that analyzes your code and identifies errors, style violations, and possible improvements.
+
+### Running Pylint Locally
+
+To check the code quality on your local machine, follow these steps:
+
+#### 1. Install Dependencies
+
+Make sure that you have all the required dependencies installed, including **Pylint** and the **Pylint-Django plugin**.
+
+```bash
+pip install -r requirements.txt
