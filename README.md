@@ -84,4 +84,29 @@ We are committed to delivering a platform that is not just a marketplace for ide
 - Regular feedback from both user groups (startups and investors) should be incorporated.
 
 
+## Code Quality: Linting with Pylint
 
+This project uses **Pylint** to enforce code quality standards and ensure consistency across the codebase. Pylint is a Python tool that checks for errors in Python code, enforces coding standards, and suggests refactors.
+
+### Running Pylint Locally
+
+To ensure the code adheres to quality standards, run Pylint on the project. Follow the instructions below:
+
+## 1. Install Dependencies
+
+Make sure you have installed all the required dependencies, including Pylint and the Pylint-Django plugin.
+
+```bash```
+pip install -r requirements.txt
+
+## 2. Run Pylint on the Entire Project
+To lint the entire project (including all apps and modules), run the following command:
+
+```bash```
+pylint --load-plugins pylint_django djangoProject
+
+## 3. Run Pylint on a Specific App
+If you want to lint only a specific app (e.g., the users app), run the following command
+
+```bash```
+pylint --load-plugins pylint_django djangoProject/users
