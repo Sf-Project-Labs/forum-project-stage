@@ -26,8 +26,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 # SECURITY WARNING: keep the secret key used in production secret!
 # Secret key
-SECRET_KEY = os.getenv("SECRET_KEY", "default_secret_key")  # Use a default for development if missing
-
+SECRET_KEY = os.getenv("SECRET_KEY")
+if not SECRET_KEY:
+    raise ValueError("SECRET_KEY is not set. Please configure it in the .env file.")
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
@@ -99,15 +100,35 @@ DATABASES = {
 
 # JWT configuration
 JWT_SECRET = os.getenv("JWT_SECRET")
+if not JWT_SECRET:
+    raise ValueError("JWT_SECRET is not set. Please configure it in the .env file.")
+
 JWT_ALGORITHM = os.getenv("JWT_ALGORITHM", "HS256")
+if not JWT_SECRET:
+    raise ValueError("JWT_SECRET is not set. Please configure it in the .env file.")
+
 
 
 # Email configuration
-EMAIL_HOST = os.getenv("EMAIL_HOST")
-EMAIL_PORT = int(os.getenv("EMAIL_PORT", 587))
+EMAIL_HOST = os.getenv("EMAIL_HOST", "smtp.gmail.com")
+
+EMAIL_PORT = int(os.getenv("EMAIL_PORT"))
+if not EMAIL_PORT:
+    raise ValueError("EMAIL_PORT is not set. Please configure it in the .env file.")
+
 EMAIL_HOST_USER = os.getenv("EMAIL_HOST_USER")
+if not EMAIL_HOST_USER:
+    raise ValueError("EMAIL_HOST_USER is not set. Please configure it in the .env file.")
+
 EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD")
-EMAIL_USE_TLS = os.getenv("EMAIL_USE_TLS") == "True"
+if not EMAIL_HOST_PASSWORD:
+    raise ValueError("EMAIL_HOST_PASSWORD is not set. Please configure it in the .env file.")
+
+EMAIL_USE_TLS = os.getenv("EMAIL_USE_TLS")
+if not EMAIL_USE_TLS:
+    raise ValueError("EMAIL_USE_TLS is not set. Please configure it in the .env file.")
+else:
+    EMAIL_USE_TLS = EMAIL_USE_TLS == "True"
 
 
 # Password validation
