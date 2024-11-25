@@ -96,17 +96,20 @@ To ensure the code adheres to quality standards, run Pylint on the project. Foll
 
 Make sure you have installed all the required dependencies, including Pylint and the Pylint-Django plugin.
 
-```bash```
+```bash
 pip install -r requirements.txt
+```
 
 ## 2. Run Pylint on the Entire Project
 To lint the entire project (including all apps and modules), run the following command:
 
-```bash```
+```bash
 pylint --load-plugins pylint_django djangoProject
+```
 
 ## 3. Run Pylint on a Specific App
 If you want to lint only a specific app (e.g., the users app), run the following command
 
-```bash```
+```bash
 pylint --load-plugins pylint_django djangoProject/users
+```
