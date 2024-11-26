@@ -6,27 +6,35 @@ services:
       context: ./djangoProject
       dockerfile: Dockerfile
     container_name: drf_web
-    command: python manage.py runserver 0.0.0.0:8000 
-    volumes:
-      - ./djangoProject:/app  
+    command: gunicorn -b 0.0.0.0:8000 djangoProject.wsgi:application  
     ports:
       - "8000:8000"
     env_file:
       - .env
     depends_on:
       - db
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health/"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
 
   db:
     image: postgres:13
     container_name: drf_db
     environment:
-      POSTGRES_DB: your_database_name
-      POSTGRES_USER: your_username
-      POSTGRES_PASSWORD: your_password
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
     ports:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
 
 volumes:
   postgres_data:
