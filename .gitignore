@@ -1,0 +1,71 @@
+# Python-specific
+*.pyc
+*.pyo
+*.pyd
+__pycache__/
+*.swp
+*.swo
+*.egg-info/
+*.eggs/
+*.pytest_cache/
+*.coverage
+.coverage.*
+
+# Virtual environment
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# Django-specific
+db.sqlite3
+*.log
+staticfiles/
+media/
+local_settings.py
+
+# Docker-specific
+*.env
+.env
+.env.*
+Dockerfile*
+.dockerignore
+*.pid
+
+# MacOS-specific
+.DS_Store
+
+# Editor-specific
+.vscode/
+.idea/
+*.sublime-workspace
+*.sublime-project
+
+# PyCharm specific
+*.iml
+.idea/
+*.idea/*
+.idea/**
+
+# Node.js (if using npm/yarn for frontend)
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Build-related
+build/
+dist/
+*.bak
+*.tmp
+*.old
+*.orig
+*.rej
+
+# Others
+*.lock
+*.orig
+
+bin/
+*.bin
