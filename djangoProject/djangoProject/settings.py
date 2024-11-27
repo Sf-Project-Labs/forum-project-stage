@@ -80,7 +80,7 @@ LOGGING = {
     'disable_existing_loggers': False,
     'formatters': {
         'standard': {
-            'format': '%(asctime)s %(levelname)s %(name)s %(message)s'
+            'format': '%(asctime)s %(levelname)s %(name)s [%(module)s:%(funcName)s] %(message)s'
         }
     },
     'handlers': {
@@ -89,7 +89,14 @@ LOGGING = {
             'class': 'logging.StreamHandler',
             'formatter': 'standard',
             'filters': []
-        }
+        },
+        'error_file': {  
+            'level': 'ERROR',  
+            'class': 'logging.FileHandler',
+            'filename': 'logs/errors.log',  
+            'formatter': 'standard',
+        },
+        
     },
     'loggers': {
         logger_name : {
@@ -98,8 +105,8 @@ LOGGING = {
         } for logger_name in ('django', 'django.request', 'django.db.backends', 'django.template', 'communications', 'dashboard', 'djangoProject', 'profiles', 'projects', 'users')
     },
     'root': {
-        'level': 'DEBUG',
-        'handlers': ['console'],
+        'level': 'INFO',
+        'handlers': ['console', 'error_file'],
     }
 }
 
