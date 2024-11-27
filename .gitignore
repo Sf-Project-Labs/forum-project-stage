@@ -1,71 +1,143 @@
-# Python-specific
-*.pyc
-*.pyo
-*.pyd
+# ---------------------
+# Python-specific files
+# ---------------------
+
+# Byte-compiled / optimized / DLL files
 __pycache__/
-*.swp
-*.swo
-*.egg-info/
-*.eggs/
-*.pytest_cache/
-*.coverage
-.coverage.*
+*.py[cod]
+*$py.class
 
 # Virtual environment
+.venv/
 env/
 venv/
-ENV/
-env.bak/
-venv.bak/
 
-# Django-specific
-db.sqlite3
-*.log
-staticfiles/
-media/
-local_settings.py
+# Pipenv
+Pipfile
+Pipfile.lock
 
-# Docker-specific
-*.env
-.env
-.env.*
-Dockerfile*
-.dockerignore
-*.pid
+# Poetry
+poetry.lock
+*.toml
 
-# MacOS-specific
-.DS_Store
-
-# Editor-specific
-.vscode/
-.idea/
-*.sublime-workspace
-*.sublime-project
-
-# PyCharm specific
-*.iml
-.idea/
-*.idea/*
-.idea/**
-
-# Node.js (if using npm/yarn for frontend)
-node_modules/
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-
-# Build-related
+# Distribution / packaging
 build/
 dist/
-*.bak
-*.tmp
-*.old
-*.orig
-*.rej
+*.egg-info/
+.eggs/
+*.whl
 
-# Others
+# ---------------------
+# IDEs and Editors
+# ---------------------
+
+# VS Code
+.vscode/
+
+# PyCharm
+.idea/
+
+# Sublime Text
+*.sublime-project
+*.sublime-workspace
+
+# Vim
+*.swp
+*.swo
+*.swn
+
+# Emacs
+*~
+
+# ---------------------
+# System files
+# ---------------------
+
+# macOS
+.DS_Store
+
+# Windows
+Thumbs.db
+desktop.ini
+
+# Linux
 *.lock
-*.orig
 
-bin/
-*.bin
+# ---------------------
+# Binaries and Libraries
+# ---------------------
+
+# Compiled object files
+*.o
+*.out
+*.so
+*.a
+*.dylib
+*.dll
+*.exe
+
+# Static Libraries
+*.lib
+
+# Debug files
+*.dSYM/
+*.stackdump
+
+# ---------------------
+# Logs and Temporary Files
+# ---------------------
+
+# Logs
+logs/
+*.log
+*.trace
+*.tmp
+
+# Temporary files
+*.temp
+*.bak
+*.old
+
+# ---------------------
+# Archives and Packages
+# ---------------------
+
+*.zip
+*.tar.gz
+*.rar
+*.7z
+*.iso
+*.img
+*.tar
+*.tgz
+
+# ---------------------
+# Media Files
+# ---------------------
+
+*.png
+*.jpg
+*.jpeg
+*.gif
+*.svg
+*.mp4
+*.mp3
+*.wav
+
+# ---------------------
+# Documentation Files
+# ---------------------
+
+*.pdf
+*.docx
+*.xlsx
+*.pptx
+
+# ---------------------
+# Node.js (if applicable)
+# ---------------------
+
+node_modules/
+npm-debug.log
+yarn-error.log
+

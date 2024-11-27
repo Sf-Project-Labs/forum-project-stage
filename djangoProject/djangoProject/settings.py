@@ -75,6 +75,41 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'djangoProject.wsgi.application'
 
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'standard': {
+            'format': '%(asctime)s %(levelname)s %(name)s [%(module)s:%(funcName)s] %(message)s'
+        }
+    },
+    'handlers': {
+        'console': {
+            'level': 'INFO',
+            'class': 'logging.StreamHandler',
+            'formatter': 'standard',
+            'filters': []
+        },
+        'error_file': {  
+            'level': 'ERROR',  
+            'class': 'logging.FileHandler',
+            'filename': 'logs/errors.log',  
+            'formatter': 'standard',
+        },
+        
+    },
+    'loggers': {
+        logger_name : {
+            'level': 'WARNING',
+            'propagate': True,
+        } for logger_name in ('django', 'django.request', 'django.db.backends', 'django.template', 'communications', 'dashboard', 'djangoProject', 'profiles', 'projects', 'users')
+    },
+    'root': {
+        'level': 'INFO',
+        'handlers': ['console', 'error_file'],
+    }
+}
+
 
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
