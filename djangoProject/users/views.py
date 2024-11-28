@@ -1,24 +1,13 @@
+from django.http import HttpResponse
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework_simplejwt.tokens import RefreshToken
 from .serializers import RegisterSerializer
-from django.http import HttpResponse
-from django.http import JsonResponse
-
-
-def api_root(request):
-    return JsonResponse({
-        "message": "Welcome to the API!",
-        "endpoints": {
-            "register": "/api/register/",
-            "login": "/api/login/",
-        },
-    })
 
 
 def home(request):
-    return HttpResponse("Welcome to the Home Page!")
+    return HttpResponse("Welcome to home page")
 
 
 class RegisterView(APIView):
