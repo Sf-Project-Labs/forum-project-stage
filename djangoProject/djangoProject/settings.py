@@ -29,6 +29,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.getenv("SECRET_KEY")
 if not SECRET_KEY:
     raise ValueError("SECRET_KEY is not set. Please configure it in the .env file.")
+
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
@@ -104,10 +105,6 @@ if not JWT_SECRET:
     raise ValueError("JWT_SECRET is not set. Please configure it in the .env file.")
 
 JWT_ALGORITHM = os.getenv("JWT_ALGORITHM", "HS256")
-if not JWT_SECRET:
-    raise ValueError("JWT_SECRET is not set. Please configure it in the .env file.")
-
-
 
 # Email configuration
 EMAIL_HOST = os.getenv("EMAIL_HOST", "smtp.gmail.com")

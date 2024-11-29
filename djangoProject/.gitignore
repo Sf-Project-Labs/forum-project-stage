@@ -1,4 +1,4 @@
-# Environment variables
 .env
 *.bin
 *.pyc
+__pycache__/
