@@ -12,10 +12,6 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 
 from pathlib import Path
 import os
-from dotenv import load_dotenv
-
-# Load environment variables from .env file
-load_dotenv()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -25,10 +21,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-# Secret key
-SECRET_KEY = os.getenv("SECRET_KEY")
-if not SECRET_KEY:
-    raise ValueError("SECRET_KEY is not set. Please configure it in the .env file.")
+SECRET_KEY = 'django-insecure-*$yv&_rb3vjusyx1^87mgs(28_mnk00i6w*#&gppxx^5y%oca7'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -67,8 +60,7 @@ ROOT_URLCONF = 'djangoProject.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [BASE_DIR / 'templates']
-        ,
+        'DIRS': [BASE_DIR / 'templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -83,50 +75,57 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'djangoProject.wsgi.application'
 
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'standard': {
+            'format': '%(asctime)s %(levelname)s %(name)s [%(module)s:%(funcName)s] %(message)s'
+        }
+    },
+    'handlers': {
+        'console': {
+            'level': 'INFO',
+            'class': 'logging.StreamHandler',
+            'formatter': 'standard',
+            'filters': []
+        },
+        'error_file': {  
+            'level': 'ERROR',  
+            'class': 'logging.FileHandler',
+            'filename': 'logs/errors.log',  
+            'formatter': 'standard',
+        },
+        
+    },
+    'loggers': {
+        logger_name : {
+            'level': 'WARNING',
+            'propagate': True,
+        } for logger_name in ('django', 'django.request', 'django.db.backends', 'django.template', 'communications', 'dashboard', 'djangoProject', 'profiles', 'projects', 'users')
+    },
+    'root': {
+        'level': 'INFO',
+        'handlers': ['console', 'error_file'],
+    }
+}
+
 
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
-# Database configuration
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': os.getenv('DATABASE_NAME'),
-        'USER': os.getenv('DATABASE_USER'),
-        'PASSWORD': os.getenv('DATABASE_PASSWORD'),
-        'HOST': os.getenv('DATABASE_HOST', 'localhost'),
-        'PORT': os.getenv('DATABASE_PORT', '5432'),
+        'NAME': os.getenv('POSTGRES_DB'),
+        'USER': os.getenv('POSTGRES_USER'),
+        'PASSWORD': os.getenv('POSTGRES_PASSWORD'),
+        'HOST': 'db',
+        'PORT': '5432',
     }
 }
 
-# JWT configuration
-JWT_SECRET = os.getenv("JWT_SECRET")
-if not JWT_SECRET:
-    raise ValueError("JWT_SECRET is not set. Please configure it in the .env file.")
-
-JWT_ALGORITHM = os.getenv("JWT_ALGORITHM", "HS256")
-
-# Email configuration
-EMAIL_HOST = os.getenv("EMAIL_HOST", "smtp.gmail.com")
-
-EMAIL_PORT = int(os.getenv("EMAIL_PORT"))
-if not EMAIL_PORT:
-    raise ValueError("EMAIL_PORT is not set. Please configure it in the .env file.")
-
-EMAIL_HOST_USER = os.getenv("EMAIL_HOST_USER")
-if not EMAIL_HOST_USER:
-    raise ValueError("EMAIL_HOST_USER is not set. Please configure it in the .env file.")
-
-EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD")
-if not EMAIL_HOST_PASSWORD:
-    raise ValueError("EMAIL_HOST_PASSWORD is not set. Please configure it in the .env file.")
-
-EMAIL_USE_TLS = os.getenv("EMAIL_USE_TLS")
-if not EMAIL_USE_TLS:
-    raise ValueError("EMAIL_USE_TLS is not set. Please configure it in the .env file.")
-else:
-    EMAIL_USE_TLS = EMAIL_USE_TLS == "True"
-
+ALLOWED_HOSTS = ['*']
 
 # Password validation
 # https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators

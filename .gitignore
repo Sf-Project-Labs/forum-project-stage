@@ -1,0 +1,143 @@
+# ---------------------
+# Python-specific files
+# ---------------------
+
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environment
+.venv/
+env/
+venv/
+
+# Pipenv
+Pipfile
+Pipfile.lock
+
+# Poetry
+poetry.lock
+*.toml
+
+# Distribution / packaging
+build/
+dist/
+*.egg-info/
+.eggs/
+*.whl
+
+# ---------------------
+# IDEs and Editors
+# ---------------------
+
+# VS Code
+.vscode/
+
+# PyCharm
+.idea/
+
+# Sublime Text
+*.sublime-project
+*.sublime-workspace
+
+# Vim
+*.swp
+*.swo
+*.swn
+
+# Emacs
+*~
+
+# ---------------------
+# System files
+# ---------------------
+
+# macOS
+.DS_Store
+
+# Windows
+Thumbs.db
+desktop.ini
+
+# Linux
+*.lock
+
+# ---------------------
+# Binaries and Libraries
+# ---------------------
+
+# Compiled object files
+*.o
+*.out
+*.so
+*.a
+*.dylib
+*.dll
+*.exe
+
+# Static Libraries
+*.lib
+
+# Debug files
+*.dSYM/
+*.stackdump
+
+# ---------------------
+# Logs and Temporary Files
+# ---------------------
+
+# Logs
+logs/
+*.log
+*.trace
+*.tmp
+
+# Temporary files
+*.temp
+*.bak
+*.old
+
+# ---------------------
+# Archives and Packages
+# ---------------------
+
+*.zip
+*.tar.gz
+*.rar
+*.7z
+*.iso
+*.img
+*.tar
+*.tgz
+
+# ---------------------
+# Media Files
+# ---------------------
+
+*.png
+*.jpg
+*.jpeg
+*.gif
+*.svg
+*.mp4
+*.mp3
+*.wav
+
+# ---------------------
+# Documentation Files
+# ---------------------
+
+*.pdf
+*.docx
+*.xlsx
+*.pptx
+
+# ---------------------
+# Node.js (if applicable)
+# ---------------------
+
+node_modules/
+npm-debug.log
+yarn-error.log
+
