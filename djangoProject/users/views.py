@@ -1,16 +1,22 @@
 from django.http import HttpResponse
+from django.utils.decorators import method_decorator
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework_simplejwt.tokens import RefreshToken
-from .serializers import RegisterSerializer
+from .serializers import RegisterSerializer, LoginSerializer
+from rest_framework.permissions import AllowAny
+from django.views.decorators.csrf import csrf_exempt
 
 
 def home(request):
     return HttpResponse("Welcome to home page")
 
 
+@method_decorator(csrf_exempt, name='dispatch')
 class RegisterView(APIView):
+    permission_classes = [AllowAny]
+
     def post(self, request):
         serializer = RegisterSerializer(data=request.data)
         if serializer.is_valid():
