@@ -1,4 +1,6 @@
-.env
+../.env
 *.bin
 *.pyc
+logs/
+.venv/
 __pycache__/
