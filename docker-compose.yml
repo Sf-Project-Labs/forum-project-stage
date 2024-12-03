@@ -19,6 +19,7 @@ services:
       timeout: 5s
       retries: 3
 
+
   db:
     image: postgres:13
     container_name: drf_db
@@ -36,5 +37,7 @@ services:
       timeout: 10s
       retries: 5
 
+
 volumes:
   postgres_data:
+

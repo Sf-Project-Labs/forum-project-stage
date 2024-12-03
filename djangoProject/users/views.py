@@ -15,6 +15,11 @@ def home(request):
     return HttpResponse("Welcome to home page")
 
 
+from rest_framework import status, generics
+
+from .serializers import UserRegistrationSerializer
+from .models import User
+
 class UserRegistrationView(generics.CreateAPIView):
     queryset = User.objects.all()
     serializer_class = UserRegistrationSerializer
