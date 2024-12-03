@@ -36,6 +36,7 @@ class User(AbstractBaseUser):
     updated_at = models.DateTimeField(auto_now=True)
 
 
+
     objects = CustomUserManager()
 
     USERNAME_FIELD = 'email'
