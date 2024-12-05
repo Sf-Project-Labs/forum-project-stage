@@ -1,5 +1,5 @@
 # Use a specific Python image
-FROM python:3.11.4-slim@sha256:17d62d681d9ecef20aae6c6605e9cf83b0ba3dc247013e2f43e1b5a045ad4901
+FROM python:3.11
 
 # Set the working directory in the container
 WORKDIR /app

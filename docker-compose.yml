@@ -1,4 +1,4 @@
-version: '3.9'
+
 
 services:
   web:
@@ -6,7 +6,10 @@ services:
       context: ./djangoProject
       dockerfile: Dockerfile
     container_name: drf_web
-    command: gunicorn -b 0.0.0.0:8000 djangoProject.wsgi:application  
+    command: >
+      sh -c "python manage.py runserver 0.0.0.0:8000"
+    volumes:
+      - .:/usr/src/app
     ports:
       - "8000:8000"
     env_file:
@@ -40,4 +43,3 @@ services:
 
 volumes:
   postgres_data:
-
