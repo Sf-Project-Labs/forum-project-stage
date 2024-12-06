@@ -16,6 +16,8 @@ import os
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+LOG_DIR = os.path.join(BASE_DIR, 'logs')
+os.makedirs(LOG_DIR, exist_ok=True)
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
@@ -122,7 +124,43 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'djangoProject.wsgi.application'
 
-
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'standard': {
+            'format': '%(asctime)s %(levelname)s %(name)s [%(module)s:%(funcName)s] %(message)s'
+        }
+    },
+    'handlers': {
+        'console': {
+            'level': 'INFO',
+            'class': 'logging.StreamHandler',
+            'formatter': 'standard',
+        },
+        'error_file': {
+            'level': 'ERROR',
+            'class': 'logging.FileHandler',
+            'filename': os.path.join(LOG_DIR, 'errors.log'),
+            'formatter': 'standard',
+        },
+    },
+    'loggers': {
+        logger: {
+            'level': 'WARNING',
+            'propagate': True,
+        }
+        for logger in (
+            'django', 'django.request', 'django.db.backends', 
+            'django.template', 'communications', 'dashboard', 
+            'djangoProject', 'profiles', 'projects', 'users'
+        )
+    },
+    'root': {
+        'level': 'INFO',
+        'handlers': ['console', 'error_file'],
+    }
+}
 
 
 
