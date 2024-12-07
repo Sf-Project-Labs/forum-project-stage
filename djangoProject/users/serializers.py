@@ -4,6 +4,8 @@ import re
 from django.contrib.auth import authenticate
 from rest_framework import serializers
 from .models import User
+
+=======
 from rest_framework import serializers
 from .models import User
 from django.core.exceptions import ValidationError
