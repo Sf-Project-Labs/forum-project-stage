@@ -1,7 +1,10 @@
-from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
+import uuid
 from django.db import models
-from django.utils import timezone
+from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin, BaseUserManager
 
+
+
+    
 
 class CustomUserManager(BaseUserManager):
     def create_user(self, email, password=None, user_type=None, **extra_fields):
@@ -22,20 +25,23 @@ class CustomUserManager(BaseUserManager):
         return self.create_user(email, password, **extra_fields)
 
 
-class User(AbstractBaseUser):
+class User(AbstractBaseUser, PermissionsMixin):
+    
     USER_TYPE_CHOICES = [
         ('investor', 'Investor'),
         ('startup', 'Startup'),
         ('both', 'Both'),
     ]
 
-    email = models.EmailField(unique=True)
-    user_type = models.CharField(max_length=15, choices=USER_TYPE_CHOICES)
+    user_id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    username = models.CharField(max_length=100, null=False, unique=True)
+    first_name = models.CharField(max_length=100, null=False)
+    last_name = models.CharField(max_length=100, null=False)
+    email = models.EmailField(unique=True, null=False, max_length=255)
+    user_type = models.CharField(max_length=10, choices=USER_TYPE_CHOICES, null=True)
     password = models.CharField(max_length=255)
-    created_at = models.DateTimeField(default=timezone.now)
-    updated_at = models.DateTimeField(auto_now=True)
-
-
+    is_active = models.BooleanField(default=False)
+    is_staff = models.BooleanField(default=False)
 
     objects = CustomUserManager()
 
@@ -43,4 +49,4 @@ class User(AbstractBaseUser):
     REQUIRED_FIELDS = ['user_type']
 
     def __str__(self):
-        return self.email
+        return self.username
