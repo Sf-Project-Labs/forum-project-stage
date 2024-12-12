@@ -1,14 +1,10 @@
+from django.contrib.auth import authenticate
 from django.http import HttpResponse
-from django.utils.decorators import method_decorator
-from rest_framework import status, generics
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from rest_framework_simplejwt.tokens import RefreshToken
-
-from .models import User
-from .serializers import LoginSerializer, UserRegistrationSerializer
+from rest_framework_simplejwt.tokens import RefreshToken, AccessToken
+from .serializers import LoginSerializer
 from rest_framework.permissions import AllowAny, IsAuthenticated
-from django.views.decorators.csrf import csrf_exempt
 
 
 def home(request):
@@ -62,4 +58,38 @@ class LogoutView(APIView):
             return Response(
                 {"error": str(e)},
                 status=status.HTTP_400_BAD_REQUEST,
+            )
+
+
+class SignInView(APIView):
+    permission_classes = [AllowAny]
+
+    def post(self, request):
+        email = request.data.get('email')
+        password = request.data.get('password')
+
+        if not email or not password:
+            return Response(
+                {"error": "Email and password are required."},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        # Authenticate the user
+        user = authenticate(request, email=email, password=password)
+
+        if user is not None:
+            # Generate JWT tokens
+            refresh = RefreshToken.for_user(user)
+            access = AccessToken.for_user(user)
+            return Response(
+                {
+                    'refresh': str(refresh),
+                    'access': str(access),
+                },
+                status=status.HTTP_200_OK
+            )
+        else:
+            return Response(
+                {"error": "Invalid email or password."},
+                status=status.HTTP_401_UNAUTHORIZED
             )

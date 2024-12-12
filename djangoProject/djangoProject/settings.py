@@ -165,12 +165,15 @@ DATABASES = {
         'NAME': os.getenv('POSTGRES_DB', 'djangoProjectDb'),
         'USER': os.getenv('POSTGRES_USER', 'postgres'),
         'PASSWORD': os.getenv('POSTGRES_PASSWORD', 'postgres123'),
-        'HOST': os.getenv('DATABASE_HOST', 'localhost'),  # Make sure this is set correctly
-        'PORT': os.getenv('POSTGRES_PORT', '5432'),  # Default PostgreSQL port
+        'HOST': os.getenv('DATABASE_HOST', 'localhost'),
+        'PORT': os.getenv('POSTGRES_PORT', '5432'),
     }
 }
-    }
-}
+
+AUTHENTICATION_BACKENDS = [
+    'django.contrib.auth.backends.ModelBackend',
+]
+
 
 # Password validation
 # https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
