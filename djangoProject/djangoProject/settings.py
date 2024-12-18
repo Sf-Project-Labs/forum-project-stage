@@ -1,29 +1,27 @@
-from dotenv import load_dotenv
+import os
 from datetime import timedelta
 from pathlib import Path
-import os
 
-load_dotenv()
-
-# Build paths inside the project like this: BASE_DIR / 'subdir'.
+# Define The Base Directory Of The Project
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+# Directory For Storing Logs
 LOG_DIR = os.path.join(BASE_DIR, 'logs')
 os.makedirs(LOG_DIR, exist_ok=True)
 
-# Quick-start development settings - unsuitable for production
+# Quick-Start Development Settings - Not Suitable For Production
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
-# SECURITY WARNING: keep the secret key used in production secret!
+# Security Warning: Keep The Secret Key Used In Production Secret!
 SECRET_KEY = 'django-insecure-*$yv&_rb3vjusyx1^87mgs(28_mnk00i6w*#&gppxx^5y%oca7'
 
-# SECURITY WARNING: don't run with debug turned on in production!
+# Security Warning: Don't Run With Debug Turned On In Production!
 DEBUG = True
 
+# Allow All Hosts For Development
 ALLOWED_HOSTS = ['*']
 
-# Application definition
-
+# Application Definition
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -41,6 +39,7 @@ INSTALLED_APPS = [
     'dashboard',
 ]
 
+# REST Framework Settings
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework.authentication.SessionAuthentication',
@@ -51,6 +50,7 @@ REST_FRAMEWORK = {
     ),
 }
 
+# Simple JWT Configuration
 SIMPLE_JWT = {
     "ACCESS_TOKEN_LIFETIME": timedelta(minutes=5),
     "REFRESH_TOKEN_LIFETIME": timedelta(days=1),
@@ -82,6 +82,7 @@ SIMPLE_JWT = {
     "SLIDING_TOKEN_REFRESH_SERIALIZER": "rest_framework_simplejwt.serializers.TokenRefreshSlidingSerializer",
 }
 
+# Middleware Configuration
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -92,8 +93,10 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
+# Root URL Configuration
 ROOT_URLCONF = 'djangoProject.urls'
 
+# Templates Configuration
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
@@ -110,8 +113,10 @@ TEMPLATES = [
     },
 ]
 
+# WSGI Application Configuration
 WSGI_APPLICATION = 'djangoProject.wsgi.application'
 
+# Logging Configuration
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
@@ -150,9 +155,8 @@ LOGGING = {
     }
 }
 
-# Database
+# Database Configuration
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
-
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
@@ -164,13 +168,13 @@ DATABASES = {
     }
 }
 
+# Authentication Backends
 AUTHENTICATION_BACKENDS = [
     'django.contrib.auth.backends.ModelBackend',
 ]
 
-# Password validation
+# Password Validation
 # https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
-
 AUTH_PASSWORD_VALIDATORS = [
     {
         'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
@@ -186,27 +190,23 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+# Define Custom User Model
 AUTH_USER_MODEL = 'users.User'
 
-# Internationalization
+# Internationalization Settings
 # https://docs.djangoproject.com/en/5.1/topics/i18n/
-
 LANGUAGE_CODE = 'en-us'
-
 TIME_ZONE = 'UTC'
-
 USE_I18N = True
-
 USE_TZ = True
 
-# Static files (CSS, JavaScript, Images)
+# Static Files Configuration
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
-
 STATIC_URL = 'static/'
 
-# Default primary key field type
+# Default Primary Key Field Type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
-
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+# Define Custom User Model Again (For Redundancy)
 AUTH_USER_MODEL = 'users.User'

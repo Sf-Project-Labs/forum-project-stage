@@ -1,45 +1,66 @@
-
-
 services:
+  # Web Application Service
   web:
+    # Build The Image Using The Dockerfile And Context From The Current Directory
     build:
-      context: ./djangoProject
-      dockerfile: Dockerfile
-    container_name: drf_web
+      context: .       # Specify The Build Context As The Current Directory
+      dockerfile: Dockerfile  # Use The Dockerfile In The Current Directory
+    container_name: drf_web  # Assign A Custom Name To The Container
+
+    # Command To Start The Django Development Server With Database Wait
     command: >
-      sh -c "python manage.py runserver 0.0.0.0:8000"
+      sh -c "./scripts/wait-for-it.sh db:5432 -- python djangoProject/manage.py runserver 0.0.0.0:8000"
+
+    # Mount The Current Directory Into The /app Directory Inside The Container
     volumes:
-      - .:/usr/src/app
+      - .:/app
+
+    # Expose Port 8000 On The Host Machine
     ports:
       - "8000:8000"
+
+    # Load Environment Variables From The .env File
     env_file:
       - .env
+
+    # Specify Dependency On The Database Service
     depends_on:
       - db
+
+    # Healthcheck Configuration For The Web Application
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8000/health/"]
+      test: [ "CMD", "curl", "-f", "http://localhost:8000/health/" ]
       interval: 30s
       timeout: 5s
       retries: 3
 
-
+  # Database Service
   db:
+    # Use The Official PostgreSQL 13 Image
     image: postgres:13
-    container_name: drf_db
+    container_name: drf_db  # Assign A Custom Name To The Database Container
+
+    # Environment Variables For The Database Configuration
     environment:
-      POSTGRES_DB: ${POSTGRES_DB}
-      POSTGRES_USER: ${POSTGRES_USER}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}  # Database Name
+      POSTGRES_USER: ${POSTGRES_USER}  # Database User
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}  # Database Password
+
+    # Expose Port 5432 For PostgreSQL
     ports:
       - "5432:5432"
+
+    # Mount A Volume To Persist PostgreSQL Data
     volumes:
       - postgres_data:/var/lib/postgresql/data
+
+    # Healthcheck Configuration For The Database
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      test: [ "CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}" ]
       interval: 30s
       timeout: 10s
       retries: 5
 
-
+# Define The Volume For Persistent Storage
 volumes:
   postgres_data:

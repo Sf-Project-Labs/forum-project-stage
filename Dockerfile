@@ -12,8 +12,8 @@ RUN python -m venv /venv && \
     /venv/bin/pip install --no-cache-dir --upgrade pip && \
     /venv/bin/pip install --no-cache-dir -r requirements.txt
 
-# Copy the rest of the project files into the container
-COPY . /app/
+# Copy the project directory into the container
+COPY djangoProject /app/djangoProject
 
 # Set environment variables
 ENV PYTHONUNBUFFERED=1
