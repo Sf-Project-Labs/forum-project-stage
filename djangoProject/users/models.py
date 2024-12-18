@@ -3,9 +3,6 @@ from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin, BaseUserManager
 
 
-
-    
-
 class CustomUserManager(BaseUserManager):
     def create_user(self, email, password=None, user_type=None, **extra_fields):
         if not email:
@@ -26,7 +23,6 @@ class CustomUserManager(BaseUserManager):
 
 
 class User(AbstractBaseUser, PermissionsMixin):
-    
     USER_TYPE_CHOICES = [
         ('investor', 'Investor'),
         ('startup', 'Startup'),

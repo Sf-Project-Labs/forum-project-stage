@@ -1,14 +1,12 @@
+from django.contrib.auth import authenticate
+from django.core.exceptions import ValidationError
+from django.core.validators import validate_email
 from django.http import HttpResponse
-from django.utils.decorators import method_decorator
-from rest_framework import status, generics
 from rest_framework.response import Response
+from rest_framework.serializers import Serializer, EmailField, CharField
 from rest_framework.views import APIView
-from rest_framework_simplejwt.tokens import RefreshToken
-
-from .models import User
-from .serializers import LoginSerializer, UserRegistrationSerializer
+from rest_framework_simplejwt.tokens import RefreshToken, AccessToken
 from rest_framework.permissions import AllowAny, IsAuthenticated
-from django.views.decorators.csrf import csrf_exempt
 
 
 def home(request):
@@ -26,17 +24,46 @@ class UserRegistrationView(generics.CreateAPIView):
     serializer_class = UserRegistrationSerializer
 
 
+# Serializer for login
+class LoginSerializer(Serializer):
+    email = EmailField()
+    password = CharField(write_only=True)
+
+    def validate_email(self, value):
+        try:
+            validate_email(value)
+        except ValidationError:
+            raise ValidationError("Invalid email format.")
+        return value
+
+
+# View for login
 class LoginView(APIView):
+    permission_classes = [AllowAny]
+
     def post(self, request):
         serializer = LoginSerializer(data=request.data)
-        if serializer.is_valid():
-            user = serializer.validated_data['user']
+        if not serializer.is_valid():
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+        email = serializer.validated_data['email']
+        password = serializer.validated_data['password']
+
+        # Authenticate user
+        user = authenticate(request, email=email, password=password)
+        if user is not None:
             refresh = RefreshToken.for_user(user)
+            access = AccessToken.for_user(user)
             return Response({
                 'refresh': str(refresh),
-                'access': str(refresh.access_token),
-            })
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+                'access': str(access),
+            }, status=status.HTTP_200_OK)
+
+        # Generic error message to prevent information leakage
+        return Response(
+            {"error": "Invalid credentials."},
+            status=status.HTTP_401_UNAUTHORIZED,
+        )
 
 
 class LogoutView(APIView):
