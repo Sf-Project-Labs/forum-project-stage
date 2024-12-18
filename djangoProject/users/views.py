@@ -7,16 +7,18 @@ from rest_framework.serializers import Serializer, EmailField, CharField
 from rest_framework.views import APIView
 from rest_framework_simplejwt.tokens import RefreshToken, AccessToken
 from rest_framework.permissions import AllowAny, IsAuthenticated
+from django.http import JsonResponse
+from rest_framework import status, generics
+from .serializers import UserRegistrationSerializer
+from .models import User
 
 
 def home(request):
     return HttpResponse("Welcome to home page")
 
 
-from rest_framework import status, generics
-
-from .serializers import UserRegistrationSerializer
-from .models import User
+def health_check(request):
+    return JsonResponse({'status': 'ok'})
 
 
 class UserRegistrationView(generics.CreateAPIView):
