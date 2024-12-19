@@ -9,7 +9,7 @@ services:
 
     # Command To Start The Django Development Server With Database Wait
     command: >
-      sh -c "./scripts/wait-for-it.sh db:5432 -- python djangoProject/manage.py runserver 0.0.0.0:8000"
+      sh -c "./scripts/wait-for-it.sh db:5432 -- python djangoProject/manage.py migrate && python djangoProject/manage.py runserver 0.0.0.0:8000"
 
     # Mount The Current Directory Into The /app Directory Inside The Container
     volumes:
