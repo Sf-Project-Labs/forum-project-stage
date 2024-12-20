@@ -1,29 +1,41 @@
 from django.contrib.auth import authenticate
+from django.core.exceptions import ValidationError
+from django.core.validators import validate_email
 from django.http import HttpResponse
+from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
+from rest_framework.serializers import Serializer, EmailField, CharField
 from rest_framework.views import APIView
 from rest_framework_simplejwt.tokens import RefreshToken, AccessToken
-from rest_framework.permissions import AllowAny, IsAuthenticated
-from django.http import JsonResponse
 from rest_framework import status, generics
-from .serializers import UserRegistrationSerializer, LoginSerializer
+
+from .serializers import UserRegistrationSerializer
 from .models import User
 
-
+# Simple Home Page View
 def home(request):
     return HttpResponse("Welcome to home page")
 
-
-def health_check(request):
-    return JsonResponse({'status': 'ok'})
-
-
+# User Registration View
 class UserRegistrationView(generics.CreateAPIView):
     queryset = User.objects.all()
     serializer_class = UserRegistrationSerializer
+    permission_classes = [AllowAny]
 
+# Serializer For Login
+class LoginSerializer(Serializer):
+    email = EmailField()
+    password = CharField(write_only=True)
 
-# View for login
+    # Validate Email Format
+    def validate_email(self, value):
+        try:
+            validate_email(value)
+        except ValidationError:
+            raise ValidationError("Invalid email format.")
+        return value
+
+# Login View
 class LoginView(APIView):
     permission_classes = [AllowAny]
 
@@ -32,12 +44,13 @@ class LoginView(APIView):
         if not serializer.is_valid():
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+        # Authenticate User With Email And Password
         email = serializer.validated_data['email']
         password = serializer.validated_data['password']
-
-        # Authenticate user
         user = authenticate(request, email=email, password=password)
+
         if user is not None:
+            # Generate JWT Tokens For Authenticated User
             refresh = RefreshToken.for_user(user)
             access = AccessToken.for_user(user)
             return Response({
@@ -45,13 +58,12 @@ class LoginView(APIView):
                 'access': str(access),
             }, status=status.HTTP_200_OK)
 
-        # Generic error message to prevent information leakage
         return Response(
             {"error": "Invalid credentials."},
             status=status.HTTP_401_UNAUTHORIZED,
         )
 
-
+# Logout View
 class LogoutView(APIView):
     permission_classes = [IsAuthenticated]
 
@@ -64,6 +76,7 @@ class LogoutView(APIView):
                     status=status.HTTP_400_BAD_REQUEST,
                 )
 
+            # Blacklist The Refresh Token
             token = RefreshToken(refresh_token)
             token.blacklist()
 

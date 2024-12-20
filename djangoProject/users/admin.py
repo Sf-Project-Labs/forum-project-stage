@@ -1,7 +1,12 @@
 # Register your models here.
 
 from django.contrib import admin
-from .models import User  # Import your models here
+from .models import User
 
-admin.site.register(User)
+@admin.register(User)
+class UserAdmin(admin.ModelAdmin):
+    list_display = ('email', 'username', 'first_name', 'last_name', 'is_active', 'is_staff')
+    search_fields = ('email', 'username')
+    list_filter = ('is_active', 'is_staff')
+
 
