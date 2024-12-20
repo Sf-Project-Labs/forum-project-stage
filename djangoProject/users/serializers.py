@@ -1,13 +1,10 @@
-
+from rest_framework import serializers
+from .models import User
 import re
-
-from django.contrib.auth import authenticate
-from rest_framework import serializers
-from .models import User
-from rest_framework import serializers
-from .models import User
 from django.core.exceptions import ValidationError
-import re
+from django.core.validators import validate_email
+from rest_framework.serializers import Serializer, EmailField, CharField
+
 
 class UserRegistrationSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True, min_length=8, required=True)
@@ -16,8 +13,6 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ['user_type', 'email', 'password', 'confirm_password']
-
-    
 
     def validate_email(self, value):
         # Validating the email format
@@ -43,27 +38,13 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
         return user
 
 
-class LoginSerializer(serializers.Serializer):
-    username = serializers.CharField()
-    password = serializers.CharField(write_only=True)
+class LoginSerializer(Serializer):
+    email = EmailField()
+    password = CharField(write_only=True)
 
-    class Meta:
-        fields = ('username', 'password')
-
-    def validate(self, data):
-        username = data.get('username')
-        password = data.get('password')
-
-        user = authenticate(username=username, password=password)
-        if not user:
-            raise serializers.ValidationError("Invalid username or password.")
-
-        if not user.is_active:
-            raise serializers.ValidationError("This account is disabled.")
-
-        data['user'] = user
-        return data
-
-        validated_data.pop('confirm_password', None)
-        user = User.objects.create_user(**validated_data)
-        return user
+    def validate_email(self, value):
+        try:
+            validate_email(value)
+        except ValidationError:
+            raise ValidationError("Invalid email format.")
+        return value

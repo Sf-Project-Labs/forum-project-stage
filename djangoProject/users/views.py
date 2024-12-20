@@ -1,15 +1,12 @@
 from django.contrib.auth import authenticate
-from django.core.exceptions import ValidationError
-from django.core.validators import validate_email
 from django.http import HttpResponse
 from rest_framework.response import Response
-from rest_framework.serializers import Serializer, EmailField, CharField
 from rest_framework.views import APIView
 from rest_framework_simplejwt.tokens import RefreshToken, AccessToken
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from django.http import JsonResponse
 from rest_framework import status, generics
-from .serializers import UserRegistrationSerializer
+from .serializers import UserRegistrationSerializer, LoginSerializer
 from .models import User
 
 
@@ -24,19 +21,6 @@ def health_check(request):
 class UserRegistrationView(generics.CreateAPIView):
     queryset = User.objects.all()
     serializer_class = UserRegistrationSerializer
-
-
-# Serializer for login
-class LoginSerializer(Serializer):
-    email = EmailField()
-    password = CharField(write_only=True)
-
-    def validate_email(self, value):
-        try:
-            validate_email(value)
-        except ValidationError:
-            raise ValidationError("Invalid email format.")
-        return value
 
 
 # View for login

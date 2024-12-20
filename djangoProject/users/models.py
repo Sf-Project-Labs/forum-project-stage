@@ -30,11 +30,11 @@ class User(AbstractBaseUser, PermissionsMixin):
     ]
 
     user_id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    username = models.CharField(max_length=100, null=False, unique=True)
-    first_name = models.CharField(max_length=100, null=False)
-    last_name = models.CharField(max_length=100, null=False)
+    username = models.CharField(max_length=100, null=True, blank=True)
+    first_name = models.CharField(max_length=100, null=True, blank=True)
+    last_name = models.CharField(max_length=100, null=True, blank=True)
     email = models.EmailField(unique=True, null=False, max_length=255)
-    user_type = models.CharField(max_length=10, choices=USER_TYPE_CHOICES, null=True)
+    user_type = models.CharField(max_length=10, choices=USER_TYPE_CHOICES, null=True, blank=True)
     password = models.CharField(max_length=255)
     is_active = models.BooleanField(default=False)
     is_staff = models.BooleanField(default=False)
