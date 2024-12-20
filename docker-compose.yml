@@ -7,7 +7,7 @@ services:
       dockerfile: Dockerfile
     container_name: drf_web
     command: >
-      sh -c "python manage.py runserver 0.0.0.0:8000"
+      sh -c "python manage.py migrate && python manage.py runserver 0.0.0.0:8000"
     volumes:
       - .:/usr/src/app
     ports:
