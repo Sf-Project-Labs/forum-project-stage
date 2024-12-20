@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'projects',
     'communications',
     'dashboard',
+    'phonenumber_field',
 ]
 
 REST_FRAMEWORK = {
