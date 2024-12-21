@@ -40,11 +40,11 @@ class User(AbstractBaseUser, PermissionsMixin):
     ]
 
     user_id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)  # Unique Identifier For Each User
-    username = models.CharField(max_length=100, null=False, unique=True)  # Unique Username
-    first_name = models.CharField(max_length=100, null=False)  # User's First Name
-    last_name = models.CharField(max_length=100, null=False)  # User's Last Name
-    email = models.EmailField(unique=True, null=False, max_length=255)  # Unique Email Address
-    user_type = models.CharField(max_length=10, choices=USER_TYPE_CHOICES, null=True)  # Type Of User
+    username = models.CharField(max_length=100, null=True, unique=True, blank=True)  # Unique Username
+    first_name = models.CharField(max_length=100, null=True, blank=True)  # User's First Name
+    last_name = models.CharField(max_length=100, null=True, blank=True)  # User's Last Name
+    email = models.EmailField(unique=True, max_length=255)  # Unique Email Address
+    user_type = models.CharField(max_length=10, choices=USER_TYPE_CHOICES, null=True, blank=True)  # Type Of User
     password = models.CharField(max_length=255)  # Hashed Password
     is_active = models.BooleanField(default=False)  # Is User Active
     is_staff = models.BooleanField(default=False)  # Is User Staff
@@ -55,4 +55,4 @@ class User(AbstractBaseUser, PermissionsMixin):
     REQUIRED_FIELDS = ['user_type']  # Additional Required Fields
 
     def __str__(self):
-        return self.username
+        return self.username or self.email
