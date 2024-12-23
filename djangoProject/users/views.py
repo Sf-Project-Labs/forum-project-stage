@@ -9,15 +9,18 @@ from rest_framework import status, generics
 from .serializers import UserRegistrationSerializer, LoginSerializer
 from .models import User
 
+
 # Simple Home Page View
 def home(request):
     return HttpResponse("Welcome to home page")
+
 
 # User Registration View
 class UserRegistrationView(generics.CreateAPIView):
     queryset = User.objects.all()
     serializer_class = UserRegistrationSerializer
     permission_classes = [AllowAny]
+
 
 # Login View
 class LoginView(APIView):
@@ -46,6 +49,7 @@ class LoginView(APIView):
             {"error": "Invalid credentials."},
             status=status.HTTP_401_UNAUTHORIZED,
         )
+
 
 # Logout View
 class LogoutView(APIView):

@@ -44,7 +44,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     first_name = models.CharField(max_length=100, null=True, blank=True)  # User's First Name
     last_name = models.CharField(max_length=100, null=True, blank=True)  # User's Last Name
     email = models.EmailField(unique=True, max_length=255)  # Unique Email Address
-    user_type = models.CharField(max_length=10, choices=USER_TYPE_CHOICES, null=True, blank=True)  # Type Of User
+    user_type = models.CharField(max_length=10, choices=USER_TYPE_CHOICES)  # Type Of User
     password = models.CharField(max_length=255)  # Hashed Password
     is_active = models.BooleanField(default=False)  # Is User Active
     is_staff = models.BooleanField(default=False)  # Is User Staff
