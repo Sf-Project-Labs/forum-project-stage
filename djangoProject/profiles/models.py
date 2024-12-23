@@ -1,4 +1,4 @@
-from django.core.validators import MinLengthValidator, RegexValidator
+from django.core.validators import MinLengthValidator
 from django.db import models
 from phonenumber_field.modelfields import PhoneNumberField
 
@@ -44,6 +44,16 @@ class BaseProfile(models.Model):
         null=True,
         blank=True,
     )
+
+    logo = models.ImageField(null=True, blank=True)
+
+    user = models.ForeignKey(
+        'users.User',
+        on_delete=models.CASCADE
+    )
+
+    def __str__(self):
+        return self.company_name
 
 
 class StartUpProfile(BaseProfile):
