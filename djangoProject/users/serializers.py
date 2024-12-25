@@ -39,6 +39,7 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
         user = User.objects.create_user(**validated_data)
         return user
 
+
 class LoginSerializer(Serializer):
     # Define Fields For Login
     email = EmailField()
@@ -49,4 +50,16 @@ class LoginSerializer(Serializer):
             validate_email(value)
         except ValidationError:
             raise ValidationError("Invalid email format.")
+        return value
+
+
+class PasswordResetSerializer(serializers.Serializer):
+    """
+    Serializer for validating the new password.
+    """
+    new_password = serializers.CharField(write_only=True, min_length=8, required=True)
+
+    def validate_new_password(self, value):
+        if len(value) < 8:
+            raise serializers.ValidationError("Password must be at least 8 characters.")
         return value
