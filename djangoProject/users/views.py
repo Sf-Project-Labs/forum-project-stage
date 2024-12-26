@@ -1,5 +1,5 @@
 from django.contrib.auth import authenticate
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseRedirect
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -21,6 +21,14 @@ class UserRegistrationView(generics.CreateAPIView):
     serializer_class = UserRegistrationSerializer
     permission_classes = [AllowAny]
 
+    def perform_create(self, serializer):
+        user = serializer.save()
+
+        redirect_url = '/'
+        if role == "startup" or role == "both":
+            return HttpResponseRedirect(f"/startup-registration/?id_user={user.user_id}")
+
+        return HttpResponseRedirect('/')
 
 # Login View
 class LoginView(APIView):
