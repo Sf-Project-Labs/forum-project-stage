@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from djangoProject.profiles.models import StartUpProfile, InvestorProfile
+from .models import StartUpProfile, InvestorProfile
 
 
 class StartUpProfileSerializer(serializers.ModelSerializer):

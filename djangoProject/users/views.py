@@ -21,14 +21,21 @@ class UserRegistrationView(generics.CreateAPIView):
     serializer_class = UserRegistrationSerializer
     permission_classes = [AllowAny]
 
-    def perform_create(self, serializer):
+    def create(self, request, *args, **kwargs):
+        # Serialize and validate the data
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        # Save the user
         user = serializer.save()
+        role = user.user_type
 
-        redirect_url = '/'
+        # Redirect based on the role
         if role == "startup" or role == "both":
-            return HttpResponseRedirect(f"/startup-registration/?id_user={user.user_id}")
+            return HttpResponseRedirect(f"/start-up/create/?id_user={user.user_id}")
 
-        return HttpResponseRedirect('/')
+        return HttpResponseRedirect("/")
+
 
 # Login View
 class LoginView(APIView):
