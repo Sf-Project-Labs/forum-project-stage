@@ -32,7 +32,7 @@ class UserRegistrationView(generics.CreateAPIView):
 
         # Redirect based on the role
         if role == "startup" or role == "both":
-            return HttpResponseRedirect(f"/start-up/create/?id_user={user.user_id}")
+            return HttpResponseRedirect(f"/profiles/start-up/create/?id_user={user.user_id}")
 
         return HttpResponseRedirect("/")
 

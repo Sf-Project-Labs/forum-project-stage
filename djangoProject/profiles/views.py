@@ -1,8 +1,9 @@
+from rest_framework.response import Response
+from .serializers import StartUpProfileSerializer, InvestorProfileSerializer
+from django.shortcuts import get_object_or_404
 from rest_framework.generics import CreateAPIView
 from rest_framework.permissions import AllowAny
-from rest_framework.response import Response
-
-from .serializers import StartUpProfileSerializer, InvestorProfileSerializer
+from django.contrib.auth.models import User
 
 
 class InvestorRegistrationView(CreateAPIView):
@@ -14,11 +15,19 @@ class StartupRegistrationView(CreateAPIView):
     serializer_class = StartUpProfileSerializer
     permission_classes = [AllowAny]
 
-    def create(self, request, *args, **kwargs):
-        context_data = request.data.get('context', {})
+    def perform_create(self, serializer):
+        # Extract id_user from query parameters
+        id_user = self.request.query_params.get('id_user')
+        if not id_user:
+            raise ValueError("User ID is missing in the query parameters.")
 
-        serializer = self.get_serializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        self.perform_create(serializer)
-        headers = self.get_success_headers(serializer.data)
-        return Response(serializer.data, status=201, headers=headers)
+        # Get the User instance based on the id_user
+        user = get_object_or_404(User, user_id=id_user)
+
+        # Save the StartupProfile with the associated user
+        serializer.save(user=user)
+
+    def get_serializer_context(self):
+        context = super().get_serializer_context()
+        context['id_user'] = self.request.query_params.get('id_user')
+        return context

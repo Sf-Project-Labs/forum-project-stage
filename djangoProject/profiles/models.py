@@ -2,6 +2,7 @@ from django.core.validators import MinLengthValidator
 from django.db import models
 from phonenumber_field.modelfields import PhoneNumberField
 
+
 class BaseProfile(models.Model):
     MIN_LENGTH_DEFAULT = 3
     MAX_LENGTH_DEFAULT = 50
