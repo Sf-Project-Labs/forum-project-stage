@@ -1,8 +1,9 @@
 from django.contrib.auth import get_user_model
 from .serializers import StartUpProfileSerializer, InvestorProfileSerializer
 from django.shortcuts import get_object_or_404
-from rest_framework.generics import CreateAPIView
+from rest_framework.generics import CreateAPIView, RetrieveAPIView
 from rest_framework.permissions import AllowAny
+from .models import StartUpProfile
 
 User = get_user_model()
 
@@ -32,3 +33,15 @@ class StartupRegistrationView(CreateAPIView):
         context = super().get_serializer_context()
         context['id_user'] = self.request.query_params.get('id_user')
         return context
+
+
+class StartUpProfileInfo(RetrieveAPIView):
+    queryset = StartUpProfile.objects.all()
+    permission_classes = [AllowAny]
+    serializer_class = StartUpProfileSerializer
+    lookup_field = 'id'
+
+    def get_object(self):
+        profile = super().get_object()
+        return profile
+
