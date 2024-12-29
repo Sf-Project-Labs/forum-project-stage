@@ -1,8 +1,8 @@
 from django.contrib.auth import get_user_model
 from .serializers import StartUpProfileSerializer, InvestorProfileSerializer
 from django.shortcuts import get_object_or_404
-from rest_framework.generics import CreateAPIView, RetrieveAPIView
-from rest_framework.permissions import AllowAny
+from rest_framework.generics import CreateAPIView, RetrieveAPIView, UpdateAPIView
+from rest_framework.permissions import AllowAny, IsAuthenticated
 from .models import StartUpProfile
 
 User = get_user_model()
@@ -45,3 +45,9 @@ class StartUpProfileInfo(RetrieveAPIView):
         profile = super().get_object()
         return profile
 
+
+class StartUpProfileEdit(UpdateAPIView):
+    queryset = StartUpProfile.objects.all()
+    serializer_class = StartUpProfileSerializer
+    permission_classes = [IsAuthenticated]
+    lookup_field = 'id'
