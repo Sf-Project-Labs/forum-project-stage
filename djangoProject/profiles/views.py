@@ -1,9 +1,10 @@
-from rest_framework.response import Response
+from django.contrib.auth import get_user_model
 from .serializers import StartUpProfileSerializer, InvestorProfileSerializer
 from django.shortcuts import get_object_or_404
 from rest_framework.generics import CreateAPIView
 from rest_framework.permissions import AllowAny
-from django.contrib.auth.models import User
+
+User = get_user_model()
 
 
 class InvestorRegistrationView(CreateAPIView):
