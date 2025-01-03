@@ -12,7 +12,7 @@ from rest_framework_simplejwt.tokens import RefreshToken, AccessToken
 
 from djangoProject import settings
 from .models import User
-from .serializers import UserRegistrationSerializer, LoginSerializer, PasswordResetSerializer
+from .serializers import UserRegistrationSerializer, LoginSerializer, PasswordRecoverySerializer, PasswordResetSerializer
 
 
 # Simple Home Page View
@@ -102,7 +102,10 @@ class PasswordRecoveryView(APIView):
         Returns:
             Response: A response indicating whether the recovery email was sent.
         """
-        email = request.data.get("email")
+        serializer = PasswordRecoverySerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        email = serializer.validated_data["email"]
         try:
             user = User.objects.get(email=email)
         except User.DoesNotExist:
@@ -118,7 +121,8 @@ class PasswordRecoveryView(APIView):
 
         send_mail(
             subject="Password Recovery",
-            message=f"Click the link to reset your password: {reset_link}",
+            message=f"Click the link to reset your password: {reset_link}\n"
+                    "This link will expire once used or when the password is successfully reset.",
             from_email=settings.DEFAULT_FROM_EMAIL,
             recipient_list=[user.email],
         )
@@ -159,7 +163,7 @@ class PasswordResetView(APIView):
             user = User.objects.get(pk=user_id)
         except (TypeError, ValueError, OverflowError, User.DoesNotExist):
             return Response(
-                {"detail": "Invalid token or user ID."}, status.HTTP_400_BAD_REQUEST
+                {"detail": "Invalid token or user ID. Ensure the link is correct and not expired"}, status.HTTP_400_BAD_REQUEST
             )
 
         token_generator = PasswordResetTokenGenerator()

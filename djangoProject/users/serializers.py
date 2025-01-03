@@ -1,9 +1,10 @@
-from rest_framework import serializers
-from .models import User
 import re
+from django.contrib.auth.password_validation import validate_password
 from django.core.exceptions import ValidationError
 from django.core.validators import validate_email
+from rest_framework import serializers
 from rest_framework.serializers import Serializer, EmailField, CharField
+from .models import User
 
 class UserRegistrationSerializer(serializers.ModelSerializer):
     # Define Fields For Registration
@@ -53,13 +54,30 @@ class LoginSerializer(Serializer):
         return value
 
 
+class PasswordRecoverySerializer(serializers.Serializer):
+    """
+    Serializer for handling the password recovery process.
+    """
+    email = serializers.EmailField()
+
+    def validate_email(self, value):
+        if not User.objects.filter(email=value).exists():
+            raise serializers.ValidationError("If the email exists, a recovery email has been sent.")
+        return value
+
+
 class PasswordResetSerializer(serializers.Serializer):
     """
     Serializer for validating the new password.
     """
-    new_password = serializers.CharField(write_only=True, min_length=8, required=True)
+    new_password = serializers.CharField(write_only=True, required=True)
+    confirm_password = serializers.CharField(write_only=True, required=True)
+
+    def validate(self, data):
+        if data['new_password'] != data['confirm_password']:
+            raise serializers.ValidationError({"confirm_password": "Passwords do not match."})
+        return data
 
     def validate_new_password(self, value):
-        if len(value) < 8:
-            raise serializers.ValidationError("Password must be at least 8 characters.")
+        validate_password(value)
         return value
