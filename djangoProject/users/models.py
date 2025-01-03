@@ -6,6 +6,8 @@ providing support for flexible user roles and authentication.
 """
 
 import uuid
+
+from django.core.exceptions import ValidationError
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin, BaseUserManager
 
@@ -100,6 +102,38 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['user_type']
+
+    def clean(self):
+        """
+        Custom validation for the user_type field to ensure it is one of the allowed values.
+
+        This method checks whether the provided user_type is valid by comparing it to
+        the choices defined in USER_TYPE_CHOICES. If the user_type is invalid, a
+        ValidationError is raised.
+
+        Raises:
+            ValidationError: If the user_type is not one of the allowed values.
+        """
+        if self.user_type not in dict(self.USER_TYPE_CHOICES):
+            raise ValidationError(f"Invalid user_type: {self.user_type}")
+        super().clean()
+
+
+    def save(self, *args, **kwargs):
+        """
+        Override the save method to ensure the email is saved in lowercase for consistency.
+
+        This method checks if the email is provided, and if so, converts it to lowercase
+        before saving the instance. This ensures that the email is always stored in a
+        consistent format.
+
+        Args:
+            *args: Additional arguments to pass to the parent save method.
+            **kwargs: Additional keyword arguments to pass to the parent save method.
+        """
+        if self.email:
+            self.email = self.email.lower()
+        super().save(*args, **kwargs)
 
     def __str__(self):
         """
