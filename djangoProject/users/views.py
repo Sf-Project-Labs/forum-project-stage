@@ -15,34 +15,59 @@ from .models import User
 from .serializers import UserRegistrationSerializer, LoginSerializer, PasswordResetSerializer
 
 
-# Simple Home Page View
 def home(request):
+    """
+    Simple view to display the home page.
+
+    Args:
+        request: The HTTP request object.
+
+    Returns:
+        HttpResponse: A simple welcome message.
+    """
     return HttpResponse("Welcome to home page")
 
 
-# User Registration View
 class UserRegistrationView(generics.CreateAPIView):
+    """
+    API view to handle user registration.
+
+    Allows users to create a new account by providing
+    the required fields.
+    """
     queryset = User.objects.all()
     serializer_class = UserRegistrationSerializer
     permission_classes = [AllowAny]
 
 
-# Login View
 class LoginView(APIView):
+    """
+    API view to handle user login.
+
+    Validates user credentials and returns JWT tokens upon success.
+    """
     permission_classes = [AllowAny]
 
     def post(self, request):
+        """
+        Handle POST request to authenticate user and issue tokens.
+
+        Args:
+            request: The HTTP request object containing login data.
+
+        Returns:
+            Response: JSON containing refresh and access tokens if successful,
+                      or error message if authentication fails.
+        """
         serializer = LoginSerializer(data=request.data)
         if not serializer.is_valid():
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-        # Authenticate User With Email And Password
         email = serializer.validated_data['email']
         password = serializer.validated_data['password']
         user = authenticate(request, email=email, password=password)
 
         if user is not None:
-            # Generate JWT Tokens For Authenticated User
             refresh = RefreshToken.for_user(user)
             access = AccessToken.for_user(user)
             return Response({
@@ -56,11 +81,24 @@ class LoginView(APIView):
         )
 
 
-# Logout View
 class LogoutView(APIView):
+    """
+    API view to handle user logout.
+
+    Requires a valid refresh token to blacklist it.
+    """
     permission_classes = [IsAuthenticated]
 
     def post(self, request):
+        """
+        Handle POST request to logout user by blacklisting the refresh token.
+
+        Args:
+            request: The HTTP request object containing the refresh token.
+
+        Returns:
+            Response: Success message or error details.
+        """
         try:
             refresh_token = request.data.get("refresh_token")
             if not refresh_token:
@@ -69,7 +107,6 @@ class LogoutView(APIView):
                     status=status.HTTP_400_BAD_REQUEST,
                 )
 
-            # Blacklist The Refresh Token
             token = RefreshToken(refresh_token)
             token.blacklist()
 
