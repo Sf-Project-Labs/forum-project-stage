@@ -12,7 +12,7 @@ from rest_framework_simplejwt.tokens import RefreshToken, AccessToken
 
 from djangoProject import settings
 from .models import User
-from .serializers import UserRegistrationSerializer, LoginSerializer, PasswordRecoverySerializer, PasswordResetSerializer
+from .serializers import UserRegistrationSerializer, LoginSerializer, PasswordResetSerializer
 
 
 # Simple Home Page View
@@ -102,10 +102,7 @@ class PasswordRecoveryView(APIView):
         Returns:
             Response: A response indicating whether the recovery email was sent.
         """
-        serializer = PasswordRecoverySerializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-
-        email = serializer.validated_data["email"]
+        email = request.data.get("email")
         try:
             user = User.objects.get(email=email)
         except User.DoesNotExist:

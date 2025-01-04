@@ -54,18 +54,6 @@ class LoginSerializer(Serializer):
         return value
 
 
-class PasswordRecoverySerializer(serializers.Serializer):
-    """
-    Serializer for handling the password recovery process.
-    """
-    email = serializers.EmailField()
-
-    def validate_email(self, value):
-        if not User.objects.filter(email=value).exists():
-            raise serializers.ValidationError("If the email exists, a recovery email has been sent.")
-        return value
-
-
 class PasswordResetSerializer(serializers.Serializer):
     """
     Serializer for validating the new password.
