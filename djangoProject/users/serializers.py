@@ -1,8 +1,5 @@
-"""
-Serializers for user-related operations, including registration and login.
-"""
-
 import re
+from django.contrib.auth.password_validation import validate_password
 from django.core.exceptions import ValidationError
 from django.core.validators import validate_email
 from rest_framework.serializers import Serializer, EmailField, CharField
@@ -72,3 +69,19 @@ class LoginSerializer(Serializer):
             raise ValidationError("Invalid email format.") from exc
         return value
 
+
+class PasswordResetSerializer(serializers.Serializer):
+    """
+    Serializer for validating the new password.
+    """
+    new_password = serializers.CharField(write_only=True, required=True)
+    confirm_password = serializers.CharField(write_only=True, required=True)
+
+    def validate(self, data):
+        if data['new_password'] != data['confirm_password']:
+            raise serializers.ValidationError({"confirm_password": "Passwords do not match."})
+        return data
+
+    def validate_new_password(self, value):
+        validate_password(value)
+        return value
