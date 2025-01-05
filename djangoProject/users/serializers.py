@@ -5,6 +5,7 @@ from django.core.exceptions import ValidationError
 from django.core.validators import validate_email
 from rest_framework.serializers import Serializer, EmailField, CharField
 
+
 class UserRegistrationSerializer(serializers.ModelSerializer):
     # Define Fields For Registration
     password = serializers.CharField(write_only=True, min_length=8, required=True)
@@ -38,6 +39,7 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
 
         user = User.objects.create_user(**validated_data)
         return user
+
 
 class LoginSerializer(Serializer):
     # Define Fields For Login

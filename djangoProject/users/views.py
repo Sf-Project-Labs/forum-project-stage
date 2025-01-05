@@ -30,11 +30,14 @@ class UserRegistrationView(generics.CreateAPIView):
         user = serializer.save()
         role = user.user_type
 
-        # Redirect based on the role
-        if role == "startup" or role == "both":
-            return HttpResponseRedirect(f"/profiles/start-up/create/?id_user={user.user_id}")
+        redirect_url = '/'
 
-        return HttpResponseRedirect("/")
+        # Redirect based on the role
+        if role == "startup":
+            redirect_url = f"/profiles/start-up/create/?id_user={user.user_id}"
+
+        return Response(redirect_url)
+
 
 
 # Login View

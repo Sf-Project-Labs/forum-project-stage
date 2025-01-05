@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'communications',
     'dashboard',
     'phonenumber_field',
+    # 'corsheaders',
 ]
 
 # REST Framework Settings
@@ -92,6 +93,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    # 'corsheaders.Middleware.CorsMiddleware',
 ]
 
 # Root URL Configuration
