@@ -27,6 +27,7 @@ class UserRegistrationView(generics.CreateAPIView):
         serializer.is_valid(raise_exception=True)
 
         # Save the user
+
         user = serializer.save()
         role = user.user_type
 
@@ -36,8 +37,7 @@ class UserRegistrationView(generics.CreateAPIView):
         if role == "startup":
             redirect_url = f"/profiles/start-up/create/?id_user={user.user_id}"
 
-        return Response(redirect_url)
-
+        return Response({"redirect_url": redirect_url}, status=status.HTTP_200_OK)
 
 
 # Login View
@@ -61,6 +61,7 @@ class LoginView(APIView):
             return Response({
                 'refresh': str(refresh),
                 'access': str(access),
+                'redirect_url': '/'
             }, status=status.HTTP_200_OK)
 
         return Response(
