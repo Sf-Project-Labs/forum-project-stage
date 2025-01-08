@@ -1,13 +1,14 @@
+from datetime import timedelta
 from django.contrib.auth import authenticate
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse
+from django.utils.timezone import now
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework_simplejwt.tokens import RefreshToken, AccessToken
 from rest_framework import status, generics
-
 from .serializers import UserRegistrationSerializer, LoginSerializer
-from .models import User
+from .models import User, TokenRecord
 
 
 # Simple Home Page View
@@ -58,6 +59,14 @@ class LoginView(APIView):
             # Generate JWT Tokens For Authenticated User
             refresh = RefreshToken.for_user(user)
             access = AccessToken.for_user(user)
+
+            TokenRecord.objects.create(
+                user=user,
+                access_token=str(access),
+                refresh_token=str(refresh),
+                expires_at=now() + timedelta(days=1)
+            )
+
             return Response({
                 'refresh': str(refresh),
                 'access': str(access),
@@ -86,6 +95,8 @@ class LogoutView(APIView):
             # Blacklist The Refresh Token
             token = RefreshToken(refresh_token)
             token.blacklist()
+            token_record_obj = TokenRecord.objects.filter(refresh_token=refresh_token)
+            TokenRecord.delete(token_record_obj)
 
             return Response(
                 {"message": "Successfully logged out."},

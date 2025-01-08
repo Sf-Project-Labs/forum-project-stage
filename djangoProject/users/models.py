@@ -1,6 +1,9 @@
 import uuid
+from datetime import timedelta
+
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin, BaseUserManager
+from django.utils.timezone import now
 
 
 # Custom Manager For User Model
@@ -56,3 +59,14 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     def __str__(self):
         return self.username or self.email
+
+
+class TokenRecord(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    access_token = models.TextField(null=True, blank=True)
+    refresh_token = models.TextField(null=True, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    expires_at = models.DateTimeField()
+
+    def __str__(self):
+        return f"Tokens for {self.user.name}"
