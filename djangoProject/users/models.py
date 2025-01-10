@@ -1,9 +1,6 @@
 import uuid
-from datetime import timedelta
-
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin, BaseUserManager
-from django.utils.timezone import now
 
 
 # Custom Manager For User Model
@@ -58,6 +55,12 @@ class User(AbstractBaseUser, PermissionsMixin):
     REQUIRED_FIELDS = ['user_type']  # Additional Required Fields
 
     def __str__(self):
+        """
+        Return a string representation of the user.
+
+        Returns:
+            str: The username if set, otherwise the email.
+            """
         return self.username or self.email
 
 
