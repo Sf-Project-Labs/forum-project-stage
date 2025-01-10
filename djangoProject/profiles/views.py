@@ -1,96 +1,80 @@
 from django.contrib.auth import get_user_model
-from jwt import InvalidTokenError
-from rest_framework.exceptions import ValidationError, AuthenticationFailed
-from rest_framework.status import HTTP_401_UNAUTHORIZED
-from rest_framework_simplejwt.tokens import UntypedToken, AccessToken
-
-from .serializers import StartUpProfileSerializer, InvestorProfileSerializer
 from django.shortcuts import get_object_or_404
-from rest_framework.generics import CreateAPIView, RetrieveAPIView, UpdateAPIView
-from rest_framework.permissions import AllowAny, IsAuthenticated
-from .models import StartUpProfile
-from rest_framework.exceptions import PermissionDenied
-from rest_framework.views import APIView
+from rest_framework.viewsets import ViewSet
 from rest_framework.response import Response
-import jwt
-from django.conf import settings
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.exceptions import ValidationError, PermissionDenied, AuthenticationFailed
+from rest_framework_simplejwt.tokens import AccessToken
+from .serializers import StartUpProfileSerializer
+from .models import StartUpProfile
 
 User = get_user_model()
 
 
-class InvestorRegistrationView(CreateAPIView):
-    serializer_class = InvestorProfileSerializer
-    permission_classes = [AllowAny]
+class StartupProfileViewSet(ViewSet):
+    """
+    A ViewSet to handle startup profile actions: registration, retrieval, and update.
+    """
+    permission_classes = [IsAuthenticated]
 
-
-class StartupRegistrationView(CreateAPIView):
-    serializer_class = StartUpProfileSerializer
-    permission_classes = [AllowAny]
-
-    def perform_create(self, serializer):
-        # Extract id_user from query parameters
-        id_user = self.request.query_params.get('id_user')
+    def create(self, request):
+        """Handles Startup Registration."""
+        id_user = request.query_params.get('id_user')
         if not id_user:
             raise ValidationError("User ID is missing in the query parameters.")
 
-        # Get the User instance based on the id_user
+        # Get the user instance
         user = get_object_or_404(User, user_id=id_user)
 
-        # Save the StartupProfile with the associated user
-        serializer.save(user=user)
+        # Save the startup profile
+        serializer = StartUpProfileSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save(user=user)
+            return Response(serializer.data, status=201)
+        return Response(serializer.errors, status=400)
 
-    def get_serializer_context(self):
-        context = super().get_serializer_context()
-        context['request_user_id'] = self.request.query_params.get('id_user')
-        return context
+    def retrieve(self, request, pk=None):
+        """Handles retrieving a single startup profile."""
+        profile = get_object_or_404(StartUpProfile, pk=pk)
+        serializer = StartUpProfileSerializer(profile)
+        return Response(serializer.data)
 
+    def update(self, request, pk=None):
+        """Handles updating a startup profile."""
+        profile = get_object_or_404(StartUpProfile, pk=pk)
+        self._check_user_permissions(request, profile)
 
-class StartUpProfileInfo(RetrieveAPIView):
-    queryset = StartUpProfile.objects.all()
-    permission_classes = [AllowAny]
-    serializer_class = StartUpProfileSerializer
-    lookup_field = 'id'
+        # Update and save the profile
+        serializer = StartUpProfileSerializer(profile, data=request.data, partial=False)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=400)
 
-    def get_object(self):
-        profile = super().get_object()
-        return profile
+    def partial_update(self, request, pk=None):
+        """Handles partial updates to a startup profile."""
+        profile = get_object_or_404(StartUpProfile, pk=pk)
+        self._check_user_permissions(request, profile)
 
+        # Partially update and save the profile
+        serializer = StartUpProfileSerializer(profile, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=400)
 
-class StartUpProfileEdit(UpdateAPIView):
-    queryset = StartUpProfile.objects.all()
-    serializer_class = StartUpProfileSerializer
-    permission_classes = [IsAuthenticated]
-    lookup_field = 'id'
-
-    def get_object(self):
-        # Get the object using the standard lookup field
-        obj = super().get_object()
-
-        # Extract the Authorization header
-        auth_header = self.request.headers.get("Authorization", None)
+    def _check_user_permissions(self, request, profile):
+        """Checks if the authenticated user has permission to modify the profile."""
+        auth_header = request.headers.get("Authorization", None)
         if not auth_header or not auth_header.startswith("Bearer "):
             raise AuthenticationFailed("Missing or invalid Authorization header.")
 
-        # Extract and decode the access token
         token_str = auth_header.split(" ")[1]
-        try:
-            # Decode the access token
-            token = AccessToken(token_str)
-            edit_id = self.kwargs.get(self.lookup_field)
+        token = AccessToken(token_str)
+        user_id = profile.user.user_id
 
-            profile_to_edit = StartUpProfile.objects.get(id=edit_id)
-            user_id = profile_to_edit.user.user_id
+        if str(user_id) != str(request.user.user_id):
+            raise PermissionDenied("You are not authorized to edit this profile.")
 
-            # Ensure the token belongs to the currently authenticated user
-            if str(user_id) != str(self.request.user.user_id):
-                print(user_id)
-                print(self.request.user.user_id)
-                raise PermissionDenied("You are not authorized to edit this profile.")
-        except Exception as e:
-            raise PermissionDenied(f"Invalid token: {str(e)}")
-
-        # Ensure the object belongs to the authenticated user
-        if obj.user != self.request.user:
+        if profile.user != request.user:
             raise PermissionDenied("You do not have permission to edit this profile.")
-
-        return obj

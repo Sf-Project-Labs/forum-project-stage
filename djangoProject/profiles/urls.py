@@ -1,10 +1,7 @@
-from django.urls import path, include
-from .views import StartupRegistrationView, StartUpProfileInfo, StartUpProfileEdit
+from rest_framework.routers import DefaultRouter
+from .views import StartupProfileViewSet
 
-urlpatterns = (
-    path('start-up/', include([
-        path('create/', StartupRegistrationView.as_view(), name='startup-registration'),
-        path('info/<int:id>/', StartUpProfileInfo.as_view(), name='startup-info'),
-        path('edit/<int:id>/', StartUpProfileEdit.as_view(), name='startup-edit'),
-    ])),
-)
+router = DefaultRouter()
+router.register('start-up', StartupProfileViewSet, basename='startup')
+
+urlpatterns = router.urls
