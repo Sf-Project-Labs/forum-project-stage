@@ -26,10 +26,6 @@ class StartUpProfileSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError("Company name must be at least 3 characters long.")
         return value
 
-    # def create(self, validated_data):
-    #     validated_data['user'] = self.context['request'].user  # Associate the current user
-    #     return super().create(validated_data)
-
     def update(self, instance, validated_data):
         if 'user' in validated_data:
             raise serializers.ValidationError("User cannot be updated.")
