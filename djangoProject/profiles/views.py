@@ -24,3 +24,8 @@ class StartUpProfileViewSet(viewsets.ModelViewSet):
     filter_backends = [SearchFilter, DjangoFilterBackend]
     search_fields = ['company_name', 'legal_name', 'industry_type', 'region']
     filterset_fields = ['region', 'industry_type', 'investment_needs']
+
+    def get_queryset(self):
+        if self.request.user.is_authenticated:
+            return StartUpProfile.objects.filter(user=self.request.user)
+        return StartUpProfile.objects.none()

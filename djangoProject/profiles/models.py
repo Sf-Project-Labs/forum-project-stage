@@ -90,7 +90,8 @@ class StartUpProfile(BaseProfile):
     """
     user = models.ForeignKey(
         'users.User',
-        on_delete=models.CASCADE
+        on_delete=models.CASCADE,
+        related_name='startup_profiles'
     )
     project_information = models.TextField()
     company_size = models.PositiveIntegerField(null=True, blank=True)
@@ -98,6 +99,10 @@ class StartUpProfile(BaseProfile):
 
     def __str__(self):
         return str(self.user)
+
+    class Meta:
+        verbose_name = "Startup Profile"
+        verbose_name_plural = "Startup Profiles"
 
 
 class InvestorProfile(BaseProfile):
