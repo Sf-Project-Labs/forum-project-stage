@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'communications',
     'dashboard',
     'phonenumber_field',
+    'django_filters',
 ]
 
 # REST Framework Settings
