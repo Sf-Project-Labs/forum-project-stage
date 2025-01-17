@@ -77,6 +77,9 @@ class BaseProfile(models.Model):
     class Meta:
         abstract = True
 
+    class Meta:
+        abstract = True
+
 
 class StartUpProfile(BaseProfile):
     """

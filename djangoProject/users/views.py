@@ -1,16 +1,18 @@
+from datetime import timedelta
 from django.contrib.auth import authenticate
 from django.contrib.auth.tokens import PasswordResetTokenGenerator
 from django.core.mail import send_mail
 from django.http import HttpResponse
+from django.utils.timezone import now
 from django.utils.encoding import force_bytes, force_str
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
-from rest_framework import status, generics
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework_simplejwt.tokens import RefreshToken, AccessToken
-
-from djangoProject import settings
+from rest_framework import status, generics
+from .models import User, TokenRecord
+from djangoProject.djangoProject import settings
 from .models import User
 from .serializers import UserRegistrationSerializer, LoginSerializer, PasswordResetSerializer
 
@@ -38,6 +40,24 @@ class UserRegistrationView(generics.CreateAPIView):
     queryset = User.objects.all()
     serializer_class = UserRegistrationSerializer
     permission_classes = [AllowAny]
+
+    def create(self, request, *args, **kwargs):
+        # Serialize and validate the data
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        # Save the user
+
+        user = serializer.save()
+        role = user.user_type
+
+        redirect_url = '/'
+
+        # Redirect based on the role
+        if role == "startup":
+            redirect_url = f"/profiles/start-up/?id_user={user.user_id}"
+
+        return Response({"redirect_url": redirect_url}, status=status.HTTP_200_OK)
 
 
 class LoginView(APIView):
@@ -70,9 +90,18 @@ class LoginView(APIView):
         if user is not None:
             refresh = RefreshToken.for_user(user)
             access = AccessToken.for_user(user)
+
+            TokenRecord.objects.create(
+                user=user,
+                access_token=str(access),
+                refresh_token=str(refresh),
+                expires_at=now() + timedelta(days=1)
+            )
+
             return Response({
                 'refresh': str(refresh),
                 'access': str(access),
+                'redirect_url': '/'
             }, status=status.HTTP_200_OK)
 
         return Response(
@@ -109,6 +138,8 @@ class LogoutView(APIView):
 
             token = RefreshToken(refresh_token)
             token.blacklist()
+            token_record_obj = TokenRecord.objects.filter(refresh_token=refresh_token)
+            TokenRecord.delete(token_record_obj)
 
             return Response(
                 {"message": "Successfully logged out."},

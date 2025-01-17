@@ -7,6 +7,7 @@ from rest_framework import serializers
 from .models import User
 
 
+
 class UserRegistrationSerializer(serializers.ModelSerializer):
     """
     Serializer for user registration, handling user creation
