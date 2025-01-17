@@ -12,9 +12,8 @@ from rest_framework.views import APIView
 from rest_framework_simplejwt.tokens import RefreshToken, AccessToken
 from rest_framework import status, generics
 from .models import User, TokenRecord
-from djangoProject.djangoProject import settings
-from .models import User
 from .serializers import UserRegistrationSerializer, LoginSerializer, PasswordResetSerializer
+from djangoProject import settings
 
 
 def home(request):

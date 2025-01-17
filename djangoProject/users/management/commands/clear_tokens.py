@@ -1,5 +1,6 @@
 from django.core.management.base import BaseCommand
 from rest_framework_simplejwt.tokens import AccessToken, RefreshToken
+from rest_framework_simplejwt.exceptions import TokenError  # Correct import
 from ...models import TokenRecord
 
 
@@ -13,14 +14,15 @@ class Command(BaseCommand):
             try:
                 # Validate Access Token
                 AccessToken(token_record.access_token)
-            except:
+            except TokenError:
                 token_record.delete()
                 expired_count += 1
+                continue  # Skip validating the Refresh Token
 
             try:
                 # Validate Refresh Token
                 RefreshToken(token_record.refresh_token)
-            except:
+            except TokenError:
                 token_record.delete()
                 expired_count += 1
 
