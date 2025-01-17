@@ -41,7 +41,8 @@ INSTALLED_APPS = [
     'communications',
     'dashboard',
     'phonenumber_field',
-    # 'corsheaders',
+    'corsheaders',
+    'django_filters',
 ]
 
 # REST Framework Settings
@@ -178,6 +179,10 @@ DATABASES = {
 AUTHENTICATION_BACKENDS = [
     'django.contrib.auth.backends.ModelBackend',
 ]
+
+# Email Backend Configuration For Console
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+DEFAULT_FROM_EMAIL = 'noreply@forum.com'
 
 # Password Validation
 # https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators

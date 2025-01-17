@@ -51,3 +51,4 @@ class InvestorProfileSerializer(serializers.ModelSerializer):
         if len(value) < 3:
             raise serializers.ValidationError("Company name must be at least 3 characters long.")
         return value
+

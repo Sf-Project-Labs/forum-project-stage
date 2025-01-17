@@ -78,3 +78,4 @@ class StartupProfileViewSet(ViewSet):
 
         if profile.user != request.user:
             raise PermissionDenied("You do not have permission to edit this profile.")
+
